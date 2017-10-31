@@ -25,10 +25,10 @@
 
 // Define if images are to be saved.
 // '0'- no; '1'- yes.
-#define saveImages 1
+#define saveImages 0
 // Define if video is to be recorded.
 // '0'- no; '1'- yes.
-#define recordVideo 1
+#define recordVideo 0
 
 // Include files to use OpenCV API.
 #include <opencv2/core/core.hpp>
@@ -52,7 +52,7 @@ using namespace cv;
 using namespace std;
 
 // Number of images to be grabbed.
-static const uint32_t c_countOfImagesToGrab = 100;
+static const uint32_t c_countOfImagesToGrab = 10000;
 
 // ‰æ‘œˆ—
 Mat trackImg(Mat img) {
@@ -132,8 +132,12 @@ int main(int argc, char* argv[])
 
 		// Camera.StopGrabbing() is called automatically by the RetrieveResult() method
 		// when c_countOfImagesToGrab images have been retrieved.
+		int count = 0;
 		while (camera.IsGrabbing())
-		{
+		{	
+			if (count++ % 500 == 0) {
+				cout << count;;
+			}
 			// Wait for an image and then retrieve it. A timeout of 5000 ms is used.
 			camera.RetrieveResult(5000, ptrGrabResult, TimeoutHandling_ThrowException);
 
@@ -141,8 +145,8 @@ int main(int argc, char* argv[])
 			if (ptrGrabResult->GrabSucceeded())
 			{
 				// Access the image data.
-				cout << "SizeX: " << ptrGrabResult->GetWidth() << endl;
-				cout << "SizeY: " << ptrGrabResult->GetHeight() << endl;
+				//cout << "SizeX: " << ptrGrabResult->GetWidth() << endl;
+				//cout << "SizeY: " << ptrGrabResult->GetHeight() << endl;
 
 				// Convert the grabbed buffer to a pylon image.
 				formatConverter.Convert(pylonImage, ptrGrabResult);
@@ -167,15 +171,15 @@ int main(int argc, char* argv[])
 					cvVideoCreator.write(openCvImage);
 
 				// Create an OpenCV display window.
-				namedWindow("OpenCV Display Window", CV_WINDOW_NORMAL); // other options: CV_AUTOSIZE, CV_FREERATIO
+				//namedWindow("OpenCV Display Window", CV_WINDOW_NORMAL); // other options: CV_AUTOSIZE, CV_FREERATIO
 
 
 				//‰æ‘œˆ—
 				Mat gray_img;
-				gray_img = trackImg(openCvImage);
+				//gray_img = trackImg(openCvImage);
 
 				// Display the current image in the OpenCV display window.
-				imshow("OpenCV Display Window", gray_img);
+				//imshow("OpenCV Display Window", openCvImage);
 				// Define a timeout for customer's input in ms.
 				// '0' means indefinite, i.e. the next image will be displayed after closing the window. 
 				// '1' means live stream
